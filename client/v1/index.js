@@ -470,6 +470,21 @@ const p5Price = vintedPrices[p5Index];
 const p25Index = Math.ceil(0.25 * vintedPrices.length)-1;
 const p25Price = vintedPrices[p25Index];
 
+//Fonction générique
+const getPercentile = (data, percentile) => {
+  // 1. D'abord, on trie les données par ordre croissant (très important !)
+  // On utilise [...data] pour ne pas modifier le tableau original
+  const sorted = [...data].sort((a, b) => a - b);
+
+  // 2. On calcule l'index correspondant
+  // Formule: (Percentile / 100) * Nombre d'éléments
+  // Math.ceil permet d'arrondir à l'entier supérieur
+  const index = Math.ceil((percentile / 100) * sorted.length) - 1;
+
+  // 3. On retourne la valeur
+  return sorted[index];
+};
+
 console.log(`TODO 11: Vinted Avg: ${avgPrice.toFixed(2)}, P5: ${p5Price}, P25: ${p25Price}`);
 
 // The p25 value (25th percentile) is the lower value expected to be exceeded in 25% of the vinted items
