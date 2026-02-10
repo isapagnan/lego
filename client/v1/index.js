@@ -517,7 +517,16 @@ const filteredVinted = VINTED.filter(item => item.uuid !== 'f2c5377c-84f9-571d-8
 // 2. Log the new list of items
 console.log('Vinted without specific item:', filteredVinted);
 
-// 🎯 TODO 5: Save a favorite item
+
+const findOneBy = (list, key, value) => {
+  return list.find(item => item[key] === value);
+};
+
+const deleteBy = (list, key, value) => {
+  return list.filter(item => item[key] !== value);
+};
+
+// 🎯 TODO 15: Save a favorite item
 // We declare and assign a variable called `sealedCamera`
 let sealedCamera = {
   link: "https://www.vinted.fr/items/5563396347-lego-43230-omaggio-a-walter-disney-misb",
