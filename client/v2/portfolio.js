@@ -26,6 +26,9 @@ let currentDeals = [];
 let currentPagination = {};
 
 // instantiate the selectors
+const filterCommentedCheckbox = document.querySelector('#filter-commented');
+const filterHotCheckbox = document.querySelector('#filter-hot');
+const selectSort = document.querySelector('#sort-select');
 const filterDiscountCheckbox = document.querySelector('#filter-discount');
 const selectShow = document.querySelector('#show-select');
 const selectPage = document.querySelector('#page-select');
@@ -184,6 +187,64 @@ if (filterDiscountCheckbox) {
       // On remet la liste complète si on décoche
       render(currentDeals, currentPagination);
     }
+  });
+}
+
+/**
+ * Feature 3 - Filter by most commented
+ * N'affiche que les deals avec plus de 15 commentaires
+ */
+if (filterCommentedCheckbox) {
+  filterCommentedCheckbox.addEventListener('change', (event) => {
+    if (event.target.checked) {
+      const commentedDeals = currentDeals.filter(deal => deal.comments >= 15);
+      render(commentedDeals, currentPagination);
+    } else {
+      render(currentDeals, currentPagination); // Remet la liste normale
+    }
+  });
+}
+
+/**
+ * Feature 4 - Filter by hot deals
+ * N'affiche que les deals avec une température > 100
+ */
+if (filterHotCheckbox) {
+  filterHotCheckbox.addEventListener('change', (event) => {
+    if (event.target.checked) {
+      const hotDeals = currentDeals.filter(deal => deal.temperature >= 100);
+      render(hotDeals, currentPagination);
+    } else {
+      render(currentDeals, currentPagination);
+    }
+  });
+}
+
+/**
+ * Feature 5 & 6 - Sort by price and date
+ * Trie la liste selon l'option choisie dans le menu déroulant
+ */
+if (selectSort) {
+  selectSort.addEventListener('change', (event) => {
+    const sortType = event.target.value;
+    
+    // On fait une copie de la liste pour ne pas détruire l'originale
+    let sortedDeals = [...currentDeals];
+
+    if (sortType === 'price-asc') {
+      sortedDeals.sort((a, b) => a.price - b.price); // Prix croissant
+    } else if (sortType === 'price-desc') {
+      sortedDeals.sort((a, b) => b.price - a.price); // Prix décroissant
+    } else if (sortType === 'date-asc') {
+      // Date croissante (du plus vieux au plus récent)
+      sortedDeals.sort((a, b) => new Date(a.published) - new Date(b.published));
+    } else if (sortType === 'date-desc') {
+      // Date décroissante (du plus récent au plus vieux)
+      sortedDeals.sort((a, b) => new Date(b.published) - new Date(a.published));
+    }
+
+    // On affiche la liste triée
+    render(sortedDeals, currentPagination);
   });
 }
 
