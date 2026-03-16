@@ -26,6 +26,7 @@ let currentDeals = [];
 let currentPagination = {};
 
 // instantiate the selectors
+const filterDiscountCheckbox = document.querySelector('#filter-discount');
 const selectShow = document.querySelector('#show-select');
 const selectPage = document.querySelector('#page-select');
 const selectLegoSetIds = document.querySelector('#lego-set-id-select');
@@ -150,6 +151,41 @@ selectShow.addEventListener('change', async (event) => {
   setCurrentDeals(deals);
   render(currentDeals, currentPagination);
 });
+
+/**
+ * Feature 1 - Browse pages
+ * Select the page to display
+ */
+selectPage.addEventListener('change', async (event) => {
+  // On récupère la taille actuelle et la nouvelle page sélectionnée
+  const size = parseInt(selectShow.value);
+  const page = parseInt(event.target.value);
+  
+  // On fetch la nouvelle page depuis l'API
+  const deals = await fetchDeals(page, size);
+
+  setCurrentDeals(deals);
+  render(currentDeals, currentPagination);
+});
+
+/**
+ * Feature 2 - Filter by best discount
+ * Filter deals with discount > 50%
+ */
+if (filterDiscountCheckbox) {
+  filterDiscountCheckbox.addEventListener('change', (event) => {
+    const isChecked = event.target.checked;
+    
+    if (isChecked) {
+      // On filtre les deals du tableau actuel en local
+      const bestDeals = currentDeals.filter(deal => deal.discount > 50);
+      render(bestDeals, currentPagination);
+    } else {
+      // On remet la liste complète si on décoche
+      render(currentDeals, currentPagination);
+    }
+  });
+}
 
 document.addEventListener('DOMContentLoaded', async () => {
   const deals = await fetchDeals();
