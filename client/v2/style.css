@@ -1,0 +1,111 @@
+/* --- style.css --- */
+
+/* Style global */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
+  color: #333;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h1, h2 {
+  color: #e2231a; /* Rouge Lego */
+}
+
+/* Zone des filtres et options */
+section#options, section#lego {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: center;
+}
+
+/* Les indicateurs Vinted */
+section#indicators {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  background: #2b2b2b;
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+}
+
+section#indicators div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 1.1em;
+}
+
+section#indicators span:last-child {
+  font-weight: bold;
+  font-size: 1.5em;
+  color: #ffd500; /* Jaune Lego */
+  margin-top: 5px;
+}
+
+/* La grille des deals */
+#deals > div {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+/* Les cartes individuelles de Lego */
+.deal {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.deal:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+}
+
+.deal a {
+  text-decoration: none;
+  color: #0056b3;
+  font-weight: bold;
+  font-size: 1.2em;
+  margin: 10px 0;
+  line-height: 1.4;
+}
+
+.deal a:hover {
+  text-decoration: underline;
+}
+
+.deal span:first-child {
+  background: #e2231a;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  align-self: flex-start;
+}
+
+/* Bouton Favoris */
+.fav-btn {
+  align-self: flex-end;
+  font-size: 1.8em;
+  transition: transform 0.2s;
+}
+
+.fav-btn:hover {
+  transform: scale(1.2);
+}
