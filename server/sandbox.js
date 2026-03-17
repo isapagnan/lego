@@ -1,23 +1,25 @@
-import { scrape } from './websites/dealabs.js';
+import { scrape as scrapeVinted } from './websites/vinted.js';
 import fs from 'fs';
 
 async function run() {
-  const URL = 'https://www.dealabs.com/groupe/lego';
-  console.log(`🕵️‍♀️  Tentative de scraping sur : ${URL}`);
+  const legoId = '75192'; // Le Faucon Millenium !
+  const URL = `https://www.vinted.fr/vetements?search_text=lego+${legoId}`;
+  
+  console.log(`🕵️‍♀️  Tentative de scraping sur Vinted : ${URL}`);
 
   try {
-    const deals = await scrape(URL);
+    const sales = await scrapeVinted(URL);
 
-    if (deals && deals.length > 0) {
-      console.log(`✅  Succès ! ${deals.length} deals trouvés.`);
+    if (sales && sales.length > 0) {
+      console.log(`✅  Succès ! ${sales.length} ventes trouvées.`);
       
-      // On sauvegarde dans le fichier
-      fs.writeFileSync('deals.json', JSON.stringify(deals, null, 2));
+      // On sauvegarde dans un nouveau fichier json
+      fs.writeFileSync('vinted_sales.json', JSON.stringify(sales, null, 2));
       
-      console.log(`💾  Fichier créé avec succès ! Vérifie la gauche de ton écran.`);
-      console.log('Exemple du premier deal :', deals[0]);
+      console.log(`💾  Fichier créé avec succès : vinted_sales.json`);
+      console.log('Exemple de vente :', sales[0]);
     } else {
-      console.log('❌  Le robot est revenu bredouille (0 deals).');
+      console.log('❌  Le robot est revenu bredouille. Soit il n\'y a pas de Lego, soit Vinted a bloqué le robot (très fréquent) !');
     }
   } catch (error) {
     console.error('⚠️  Une erreur est survenue :', error.message);
