@@ -35,6 +35,26 @@ const selectPage = document.querySelector('#page-select');
 const selectLegoSetIds = document.querySelector('#lego-set-id-select');
 const sectionDeals= document.querySelector('#deals');
 const spanNbDeals = document.querySelector('#nbDeals');
+const filterFavoriteCheckbox = document.querySelector('#filter-favorite');
+
+
+/**
+ * Helper: Get favorites from localStorage
+ */
+const getFavorites = () => JSON.parse(localStorage.getItem('lego-favorites')) || [];
+
+/**
+ * Helper: Toggle favorite in localStorage
+ */
+const toggleFavorite = (uuid) => {
+  let favs = getFavorites();
+  if (favs.includes(uuid)) {
+    favs = favs.filter(id => id !== uuid); // Retire des favoris
+  } else {
+    favs.push(uuid); // Ajoute aux favoris
+  }
+  localStorage.setItem('lego-favorites', JSON.stringify(favs));
+};
 
 /**
  * Set global value
@@ -78,13 +98,20 @@ const fetchDeals = async (page = 1, size = 6) => {
 const renderDeals = deals => {
   const fragment = document.createDocumentFragment();
   const div = document.createElement('div');
+  const favs = getFavorites(); // On récupère les favoris actuels
+
   const template = deals
     .map(deal => {
+      // On vérifie si ce deal est dans nos favoris pour colorer l'étoile
+      const isFav = favs.includes(deal.uuid);
       return `
-      <div class="deal" id=${deal.uuid}>
+      <div class="deal" id=${deal.uuid} style="padding: 10px; border: 1px solid #ccc; margin-bottom: 5px;">
         <span>${deal.id}</span>
-        <a href="${deal.link}">${deal.title}</a>
-        <span>${deal.price}</span>
+        <a href="${deal.link}" target="_blank" rel="noopener noreferrer">${deal.title}</a>
+        <span>${deal.price} €</span>
+        <button class="fav-btn" data-uuid="${deal.uuid}" style="cursor: pointer; border: none; background: none;">
+          ${isFav ? '⭐' : '☆'}
+        </button>
       </div>
     `;
     })
@@ -254,3 +281,40 @@ document.addEventListener('DOMContentLoaded', async () => {
   setCurrentDeals(deals);
   render(currentDeals, currentPagination);
 });
+
+/**
+ * Feature 13 - Save as favorite
+ * Écoute les clics sur les boutons étoiles
+ */
+sectionDeals.addEventListener('click', (event) => {
+  // Si on clique sur un élément qui a la classe "fav-btn"
+  if (event.target.classList.contains('fav-btn')) {
+    const uuid = event.target.dataset.uuid;
+    toggleFavorite(uuid); // Ajoute/Enlève du localStorage
+    
+    // Si la case "My favorites" est cochée, on filtre. Sinon, on rafraîchit la page normale
+    if (filterFavoriteCheckbox && filterFavoriteCheckbox.checked) {
+      const favs = getFavorites();
+      const favoriteDeals = currentDeals.filter(deal => favs.includes(deal.uuid));
+      render(favoriteDeals, currentPagination);
+    } else {
+      render(currentDeals, currentPagination);
+    }
+  }
+});
+
+/**
+ * Feature 14 - Filter by favorite
+ * Filtre la liste quand on coche la case
+ */
+if (filterFavoriteCheckbox) {
+  filterFavoriteCheckbox.addEventListener('change', (event) => {
+    if (event.target.checked) {
+      const favs = getFavorites();
+      const favoriteDeals = currentDeals.filter(deal => favs.includes(deal.uuid));
+      render(favoriteDeals, currentPagination);
+    } else {
+      render(currentDeals, currentPagination);
+    }
+  });
+}
