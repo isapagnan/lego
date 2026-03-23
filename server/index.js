@@ -1,12 +1,24 @@
-import parseDomain from 'parse-domain';
-import { requireAll } from 'require-all';
+import { scrape as scrapeAvenue } from './websites/avenuedelabrique.js';
+import { scrape as scrapeDealabs } from './websites/dealabs.js';
+import { scrape as scrapeVinted } from './websites/vinted.js';
 
-const websites = requireAll(`${__dirname}/websites`);
+/**
+ * Scrape a given link
+ * @param {String} link
+ * @returns {Array} deals
+ */
+export default async link => {
+  if (link.includes('avenuedelabrique.com')) {
+    return await scrapeAvenue(link);
+  }
 
+  if (link.includes('dealabs.com')) {
+    return await scrapeDealabs(link);
+  }
 
-module.exports = async link => {
-  const {'domain': website} = parseDomain(link);
-  const deals = await websites[website].scrape(link);
+  if (link.includes('vinted')) {
+    return await scrapeVinted(link);
+  }
 
-  return deals;
+  return [];
 };

@@ -1,85 +1,55 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>🧱 Lego | Predictability of a lego set deal</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <h1>Lego</h1>
-    <section id="options">
-      <div id="show">
-        <label for="show-select">Show:</label>
-        <select name="show" id="show-select">
-          <option value="6">6</option>
-          <option value="12">12</option>
-          <option value="24">24</option>
-        </select>
-      </div>
-      <div id="page">
-        <label for="page-select">Go to page:</label>
-        <select name="page" id="page-select"> </select>
-      </div>
-      <div id="filters">
-        <label>
-          <input type="checkbox" id="filter-discount"> By best discount
-        </label>
-        <label>
-          <input type="checkbox" id="filter-commented"> By most commented
-        </label>
-        <label>
-          <input type="checkbox" id="filter-hot"> By hot deals
-        </label>
-        <label>
-          <input type="checkbox" id="filter-favorite"> ⭐ My favorites
-        </label>
-      </div>
-      <div id="sort">
-        <label for="sort-select">Sort:</label>
-        <select name="sort" id="sort-select">
-          <option value="price-asc">Cheaper</option>
-          <option value="price-desc">Expensive</option>
-          <option value="date-asc">Recently published</option>
-          <option value="date-desc">Anciently published</option>
-        </select>
-      </div>
-    </section>
-    <section id="lego">
-      <h2>Lego sets</h2>
-      <div>
-        <label>Lego set id:</label>
-        <select id="lego-set-id-select"></select> 
-      </div>
-    </section>
-    <section id="indicators">
-      <h2>Indicators</h2>
-      <div>
-        <span>Number of deals</span>
-        <span id="nbDeals">0</span>
-      </div>
-      <div>
-        <span>Number of sales</span>
-        <span id="nbSales">0</span>
-      </div>
-      <div>
-        <span>p5 sales price value</span>
-        <span>0</span>
-      </div>
-      <div>
-        <span>p25 sales price value</span>
-        <span>0</span>
-      </div>
-      <div>
-        <span>p50 sales price value</span>
-        <span>0</span>
-      </div>
-      <div>
-        <span>Lifetime value</span>
-        <span>10 days</span>
-      </div>
-    </section>
-    <section id="deals"></section>
-    <script type="text/javascript" charset="UTF-8" src="utils.js"></script>
-    <script type="text/javascript" charset="UTF-8" src="portfolio.js"></script>
-  </body>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>🧱 Lego Brick Deals</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>🧱 Lego Brick Deals</h1>
+
+  <section id="options">
+    <div class="option-group">
+      <label for="show-select">Show</label>
+      <select id="show-select">
+        <option value="6">6</option>
+        <option value="12" selected>12</option>
+        <option value="24">24</option>
+      </select>
+    </div>
+
+    <div class="option-group">
+      <label for="page-select">Go to page</label>
+      <select id="page-select"></select>
+    </div>
+
+    <div class="option-group">
+      <label for="sort-select">Sort by</label>
+      <select id="sort-select">
+        <option value="none">Default</option>
+        <option value="price-asc">Price: Low to High</option>
+        <option value="price-desc">Price: High to Low</option>
+      </select>
+    </div>
+
+    <div class="option-group">
+      <label>
+        <input type="checkbox" id="filter-favorite"> My Favorites
+      </label>
+    </div>
+  </section>
+
+  <section id="indicators">
+    <div class="indicator">
+      <span>Total Deals</span>
+      <div id="nbDeals">0</div>
+    </div>
+  </section>
+
+  <section id="deals"></section>
+
+  <script src="portfolio.js"></script>
+</body>
 </html>

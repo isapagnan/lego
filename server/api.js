@@ -1,67 +1,128 @@
-import bodyParser from 'body-parser';
-import cors from 'cors';
 import express from 'express';
+import cors from 'cors';
 import helmet from 'helmet';
-
-import { readFileSync } from 'node:fs';
-import { fileURLToPath } from 'url';
-import path from 'path';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-
-const PORT = 8092;
+import fs from 'fs';
+import { scrape as scrapeVinted } from './websites/vinted.js';
 
 const app = express();
+const PORT = process.env.PORT || 8080;
 
-// We load json files as data source
-let SALES = {};
-
-app.use(bodyParser.json());
-app.use(cors());
 app.use(helmet());
-app.use(cors())
+app.use(cors());
+app.use(express.json());
 
-app.get('/', (request, response) => {
-  response.send({'ack': true});
+const getDeals = () => {
+  try {
+    const data = fs.readFileSync('deals.json', 'utf8');
+    return JSON.parse(data);
+  } catch (e) {
+    return [];
+  }
+};
+
+app.get('/', (req, res) => {
+  res.send({ 'message': 'Lego API is running!', 'ack': true });
 });
 
-app.get('/sales/search', (request, response) => {
-  response.setHeader('Access-Control-Allow-Credentials', true)
-  response.setHeader('Access-Control-Allow-Origin', '*')
-  response.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT')
-  response.setHeader(
-    'Access-Control-Allow-Headers',
-    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
-  )
+/**
+ * GET /deals
+ * Basic paginated deals for the frontend v2
+ */
+app.get('/deals', (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const size = parseInt(req.query.size) || 12;
+  const skip = (page - 1) * size;
 
-  try {
-    const { legoSetId } = request.query;
-    const result = SALES[legoSetId] || []
+  const deals = getDeals();
+  const result = deals.slice(skip, skip + size);
 
-    return response.status(200).json({
-      'success': true,
-      'data': {'result': result}
-    });
-  } catch (error) {
-    console.log(error);
-    return response.status(404).send({
-      'success': false,
-      'data': {'result': []}
-    });
+  res.send({
+    'success': true,
+    'data': {
+      'result': result,
+      'meta': {
+        'currentPage': page,
+        'pageCount': Math.ceil(deals.length / size),
+        'pageSize': size,
+        'count': deals.length
+      }
+    }
+  });
+});
+
+/**
+ * GET /deals/search
+ * Advanced search as per Workshop 4 requirements
+ */
+app.get('/deals/search', (req, res) => {
+  let limit = parseInt(req.query.limit) || 12;
+  let price = parseFloat(req.query.price);
+  
+  let deals = getDeals();
+
+  if (!isNaN(price)) {
+    deals = deals.filter(d => d.price <= price);
+  }
+
+  // Sorting by price ascending as per requirements
+  deals.sort((a, b) => a.price - b.price);
+
+  const results = deals.slice(0, limit);
+
+  res.send({
+    'limit': limit,
+    'total': deals.length,
+    'results': results
+  });
+});
+
+/**
+ * GET /deals/:id
+ * Fetch a specific deal by its uuid
+ */
+app.get('/deals/:id', (req, res) => {
+  const { id } = req.params;
+  const deals = getDeals();
+  const deal = deals.find(d => d.uuid === id);
+
+  if (deal) {
+    res.send(deal);
+  } else {
+    res.status(404).send({ 'message': 'Deal not found' });
   }
 });
 
+/**
+ * GET /sales/search
+ * Scrape Vinted sales for a specific lego set id
+ */
+app.get('/sales/search', async (req, res) => {
+  const { legoSetId } = req.query;
+  const limit = parseInt(req.query.limit) || 12;
+
+  if (!legoSetId) {
+    return res.status(400).send({ 'message': 'Missing legoSetId parameter' });
+  }
+
+  try {
+    const URL = `https://www.vinted.fr/vetements?search_text=lego+${legoSetId}`;
+    const sales = await scrapeVinted(URL);
+    
+    const results = (sales || []).slice(0, limit);
+
+    res.send({
+      'success': true,
+      'data': {
+        'limit': limit,
+        'total': (sales || []).length,
+        'results': results
+      }
+    });
+  } catch (error) {
+    res.status(500).send({ 'success': false, 'message': error.message });
+  }
+});
 
 app.listen(PORT, () => {
-  // when we start the server we load available json files
-  try {
-    SALES = JSON.parse(
-      readFileSync(path.join(__dirname, 'sources', 'vinted.json'), 'utf8')
-    );
-  } catch (error) {
-    console.warn(`⚠️  ${error}`);
-  }
-})
-
-console.log(`📡 Running on port ${PORT}`);
+  console.log(`🚀  Server running on http://localhost:${PORT}`);
+});
