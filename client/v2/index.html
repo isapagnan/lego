@@ -3,52 +3,101 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>🧱 Lego Brick Deals</title>
+  <title>🧱 BrickDash | Lego Deals Tracker</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-  <h1>🧱 Lego Brick Deals</h1>
 
-  <section id="options">
-    <div class="option-group">
-      <label for="show-select">Show</label>
-      <select id="show-select">
-        <option value="6">6</option>
-        <option value="12" selected>12</option>
-        <option value="24">24</option>
-      </select>
+  <header>
+    <div class="header-container">
+      <div class="logo">
+        <span class="logo-icon">🧱</span>
+        <h1>BrickDash</h1>
+      </div>
+      <div class="header-search">
+        <input type="text" id="search-input" placeholder="Search by set ID or name...">
+      </div>
+      <nav class="header-nav">
+        <a href="#" class="nav-link active">All</a>
+        <a href="#" class="nav-link">Deals</a>
+        <a href="#" class="nav-link">Favorites</a>
+      </nav>
     </div>
+  </header>
 
-    <div class="option-group">
-      <label for="page-select">Go to page</label>
-      <select id="page-select"></select>
-    </div>
+  <main class="container">
+    <aside id="options">
+      <h2>Filters</h2>
+      
+      <div class="option-group">
+        <label for="show-select">Display</label>
+        <select id="show-select">
+          <option value="6">6 per page</option>
+          <option value="12" selected>12 per page</option>
+          <option value="24">24 per page</option>
+        </select>
+      </div>
 
-    <div class="option-group">
-      <label for="sort-select">Sort by</label>
-      <select id="sort-select">
-        <option value="none">Default</option>
-        <option value="price-asc">Price: Low to High</option>
-        <option value="price-desc">Price: High to Low</option>
-      </select>
-    </div>
+      <div class="option-group">
+        <label for="discount-select">Minimum Discount</label>
+        <select id="discount-select">
+          <option value="0">All Deals</option>
+          <option value="20">20% or more</option>
+          <option value="40">40% or more</option>
+          <option value="60">60% or more</option>
+        </select>
+      </div>
 
-    <div class="option-group">
-      <label>
-        <input type="checkbox" id="filter-favorite"> My Favorites
-      </label>
-    </div>
-  </section>
+      <div class="option-group">
+        <label for="sort-select">Sort By</label>
+        <select id="sort-select">
+          <option value="none">Newest</option>
+          <option value="price-asc">Price: Low to High</option>
+          <option value="price-desc">Price: High to Low</option>
+        </select>
+      </div>
 
-  <section id="indicators">
-    <div class="indicator">
-      <span>Total Deals</span>
-      <div id="nbDeals">0</div>
-    </div>
-  </section>
+      <div class="option-group">
+        <label for="page-select">Jump to page</label>
+        <select id="page-select"></select>
+      </div>
 
-  <section id="deals"></section>
+      <div class="option-group">
+        <label class="checkbox-group">
+          <input type="checkbox" id="filter-favorite"> 
+          ⭐ Show Favorites
+        </label>
+      </div>
+    </aside>
+
+    <section id="main-content">
+      <div class="content-header">
+        <div id="indicators">
+          <div class="indicator">
+            <span id="nbDeals">0</span> deals tracked
+          </div>
+        </div>
+        <div class="pagination-controls">
+          <button id="prev-page" class="page-btn">← Prev</button>
+          <button id="next-page" class="page-btn">Next →</button>
+        </div>
+      </div>
+
+      <div id="deals">
+        <!-- Deals will be rendered here -->
+      </div>
+
+      <div class="content-footer">
+        <div class="pagination-controls">
+          <button id="prev-page-bottom" class="page-btn">← Previous Page</button>
+          <button id="next-page-bottom" class="page-btn">Next Page →</button>
+        </div>
+      </div>
+    </section>
+  </main>
 
   <script src="portfolio.js"></script>
 </body>

@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import fs from 'fs';
+import path from 'path';
 import { scrape as scrapeVinted } from './websites/vinted.js';
 
 const app = express();
@@ -13,9 +14,11 @@ app.use(express.json());
 
 const getDeals = () => {
   try {
-    const data = fs.readFileSync('deals.json', 'utf8');
+    const dealsPath = path.join(process.cwd(), 'deals.json');
+    const data = fs.readFileSync(dealsPath, 'utf8');
     return JSON.parse(data);
   } catch (e) {
+    console.error('Error reading deals.json:', e);
     return [];
   }
 };
